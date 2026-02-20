@@ -1,26 +1,26 @@
 # AI-Powered Analytics Workflows
-Build practical automations for analytics and BI using n8n, agents, and model-specific AI prompting.
+Production-minded analytics automation blueprints for n8n, agents, and model-specific AI execution.
 
-This repository contains workflow blueprints, implementation notes, and prompt packs for creating reliable analytics automations. Focus: clear business outcomes, strong guardrails, and portfolio-ready artifacts.
+This repository focuses on practical workflow architecture for analytics and BI teams: daily KPI command centers, anomaly alerts, incident triage, and source-to-dashboard orchestration. The approach is strict mode: clear data contracts, explicit failure handling, and model-specific prompt workflows.
 
-## Who is this for?
-- Junior analysts automating repetitive reporting tasks
-- BI developers building alerting and KPI delivery pipelines
-- Students exploring n8n + LLM agent patterns with practical scope
-- Portfolio builders who want “wow-factor but useful” projects
+## Who Is This For?
+- Junior analysts automating repetitive reporting and KPI monitoring
+- BI practitioners building reliable alerting and delivery pipelines
+- Students creating automation-heavy portfolio projects
+- Builders combining n8n + LLM reasoning with practical guardrails
 
-## Features
-- n8n workflow templates (KPI briefings, anomaly alerts, incident triage)
-- Prompt guides for Claude, ChatGPT, and Gemini
-- Error-handling and human-approval patterns
-- Lightweight architecture notes for LangChain/LangGraph orchestration
-- README-ready project narratives for portfolio publishing
+## What You Get
+- Workflow patterns for n8n-based analytics operations
+- Model-specific prompt workflows for Claude, ChatGPT, and Gemini
+- Error handling patterns: retries, fallback paths, dead-letter routing
+- Human-in-the-loop approval examples for risk-sensitive actions
+- Portfolio-ready documentation patterns for showcasing automation work
 
 ## Installation & Setup
-1. Clone the repository.
+1. Clone the repo.
 ```bash
-git clone <your-repo-url>
-cd ai-powered-analytics-workflows
+git clone https://github.com/daniel-st3/ai-analytics-prompt-playbook.git
+cd ai-analytics-prompt-playbook
 ```
 
 2. Open in VS Code.
@@ -28,55 +28,96 @@ cd ai-powered-analytics-workflows
 code .
 ```
 
-3. Install/run n8n (local option).
+3. Run n8n locally (optional local setup).
 ```bash
 npm init -y
 npx n8n
 ```
 
-4. Use with Claude Code.
-- Open workflow spec file in repo.
-- Paste the Claude prompt variant.
-- Ask Claude to convert business requirements into node-level flow.
+4. Use with Claude Code / Claude web.
+- Use Claude to design node-by-node architecture.
+- Require data contracts and edge-case handling.
+- Request MVP + hardening roadmap.
 
-5. Use with ChatGPT (web).
-- Paste workflow context and sample payloads.
-- Ask for transform scripts, test cases, and alert templates.
+5. Use with ChatGPT web.
+- Step 1 with o1/o3: reason through edge cases first.
+- Step 2 with ADA (when needed): generate code snippets/test scaffolds.
+- Validate logic before deployment.
 
-6. Use with Gemini (web).
-- Attach SOP docs, payload examples, and policy notes.
-- Ask for source-grounded workflow recommendations.
+6. Use with Gemini Advanced.
+- Attach SOP docs, payload samples, and policies.
+- Require source-grounded workflow recommendations.
+- Ask for confirmed facts vs assumptions.
 
-## How to Use
-Start with one workflow only (do not overbuild v1).
+## Strict-Mode Workflow Protocol
+1. Define objective, trigger, SLA, and destination.
+2. Specify payload schema and data contracts.
+3. Generate architecture with model-specific prompt.
+4. Add retries, fallback, and approval checkpoints.
+5. Run happy path + failure path tests.
+6. Capture lessons in runbook and README.
 
-### Claude workflow prompt
-```text
-Design an n8n workflow for daily KPI briefing.
-Include trigger, transforms, summary node, retry logic, and human approval gate.
+## Example Prompt Patterns
+### Claude (workflow architecture)
+```xml
+<context>
+Design an n8n workflow for daily KPI summary delivery.
+</context>
+<schema>
+Paste source payloads, KPI definitions, and destination format.
+</schema>
+<task>
+Return node sequence, retry logic, and failure routing.
+</task>
+<rules>
+Include idempotency, human approval gate, and test matrix.
+</rules>
 ```
 
-### ChatGPT workflow prompt
+### ChatGPT (o1/o3 + ADA)
 ```text
-Generate implementation checklist + JS snippets for n8n Function nodes:
-date normalization, KPI deltas, anomaly flags.
+Phase 1: Use o1/o3 to reason through edge cases (duplicate triggers, stale source, bad schema).
+Phase 2: Generate implementation checklist and minimal code snippets for transforms.
+If needed, use ADA for simulation/testing helpers.
 ```
 
-### Gemini workflow prompt
+### Gemini (source-grounded planning)
 ```text
-Use attached docs and payload samples to propose a robust n8n flow with data contracts and failure handling.
+Using attached SOP docs and payload examples,
+produce a source-grounded n8n blueprint with data contracts,
+error handling, escalation paths, and rollout checklist.
 ```
 
-## How This Helps Your Portfolio
-- Demonstrates end-to-end thinking: data ingestion to decision delivery
-- Shows practical automation design, not only notebooks
-- Highlights reliability mindset (retries, approvals, observability)
-- Creates strong interview stories around impact and operational maturity
+## Troubleshooting / Handling AI Hallucinations
+If a workflow references nonexistent fields:
+```text
+Only use this field list: [paste list].
+Rewrite mappings and add fallback behavior for missing required fields.
+```
+
+If retry/fallback logic is missing:
+```text
+Your current design is not production-safe.
+Add retry policy, dead-letter path, and escalation rule for repeated failure.
+```
+
+If AI recommends tools not in your stack:
+```text
+Limit recommendations to this stack only: [paste stack].
+Re-rank implementation steps by feasibility this week.
+```
+
+## How to Showcase This in Your Portfolio
+- Include one architecture diagram and one test matrix per workflow.
+- Show one failure scenario and how your design recovers.
+- Publish a short “MVP vs hardening” roadmap.
+- Add a measurable outcome (time saved, incidents reduced, reporting latency improved).
 
 ## Contribution Guidelines
-- Submit workflows with objective, architecture diagram, and test cases.
-- Include one Claude, one ChatGPT, and one Gemini prompt variant per workflow.
-- Document limitations and assumptions clearly.
+1. Submit workflows with objective, node map, and data contracts.
+2. Include failure handling and validation checklist.
+3. Provide Claude, ChatGPT, and Gemini prompt variants.
+4. Keep examples realistic, reproducible, and evidence-based.
 
 ## License
 `[Choose a license: MIT / Apache-2.0 / Proprietary]`

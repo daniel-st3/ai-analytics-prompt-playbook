@@ -1,13 +1,13 @@
 ## Build a Fraud Detection Analytics Notebook with AI in 45 Minutes
 
 ## Overview
-This tutorial gives you a practical sprint format to build a fraud analytics notebook fast without turning it into a toy project. In 45 minutes, you will set up a Python environment, run focused EDA, build three baseline models (logistic regression, random forest, gradient boosting), and produce a business-facing summary. The workflow is intentionally portfolio-friendly: each step generates artifacts you can reuse in a GitHub repo and interview discussion. You will use AI differently by model: Claude for structure and risk thinking, ChatGPT ADA for executable notebook work, and Gemini for long-context synthesis if you bring policy docs, KPI definitions, or past reports.
+This tutorial is a fast, portfolio-ready sprint to build a fraud analytics notebook that is useful in interviews and realistic for business work. The objective is not perfect accuracy in one session; it is analyst judgment: clear framing, defensible checks, baseline models, and transparent limitations. In 45 minutes, you will produce four artifacts: EDA summary, model comparison table, threshold decision note, and README-ready conclusion.
 
 ## Prerequisites
 1. Install Python 3.10+ and VS Code.
 2. Create a project folder and virtual environment.
-3. Install notebook dependencies.
-4. Prepare a fraud dataset with a binary target column (for example `is_fraud`).
+3. Install required packages.
+4. Prepare a dataset with a binary fraud label (for example, `is_fraud`).
 
 ```bash
 mkdir fraud-notebook-ai
@@ -18,7 +18,7 @@ pip install pandas numpy scikit-learn matplotlib seaborn jupyterlab
 jupyter lab
 ```
 
-Optional if you prefer Conda:
+Optional Conda setup:
 
 ```bash
 conda create -n fraud-ai python=3.11 -y
@@ -28,148 +28,220 @@ pip install pandas numpy scikit-learn matplotlib seaborn jupyterlab
 
 ## Step-by-Step
 
-### Step 1: Frame the problem and load data
-Create a notebook with three first cells: imports, data load, and quick schema printout. Keep the goal concrete: “Predict likely fraudulent transactions to reduce manual review time while controlling false positives.” Add one markdown cell with business constraints (for example, “review team handles max 300 alerts/day”).
+### Step 1: Define the analysis contract before writing code
+Start by writing one markdown cell with business objective, primary decision, alert capacity, target variable, unit of analysis, and constraints. Most weak notebooks fail from unclear scope, not weak coding. Keep it specific: “prioritize likely fraudulent transactions while limiting false positives.”
 
-### Using Claude for this step
+#### Using Claude for this step
 ```text
-I’m building a fraud notebook. Here is schema + sample rows. Help me define:
-1) prediction target
-2) unit of analysis
-3) leakage risks
-4) business cost assumptions
-Return a one-page analysis contract.
+<context>
+I am building a fraud notebook for portfolio and interview use.
+</context>
+<schema>
+Here is DDL + sample rows.
+</schema>
+<task>
+Create an analysis contract with objective, target definition, grain, and decision criteria.
+</task>
+<rules>
+Ask clarifying questions if grain/label timing is ambiguous.
+</rules>
 ```
 
-### Using ChatGPT for this step
+#### Using ChatGPT for this step
 ```text
-Use Advanced Data Analysis on the uploaded file.
-Show column types, null rates, class balance, and suspicious columns for leakage.
-Return Python code cells and short notes.
+Use o1/o3 to reason through edge cases before execution.
+Identify ambiguity in target definition, label timing, and population scope.
+Then provide a concise analysis contract template I can paste in my notebook.
 ```
 
-### Using Gemini for this step
+#### Using Gemini for this step
 ```text
-I attached dataset + fraud policy PDF + KPI notes.
-Create a problem framing summary and list assumptions, with each assumption linked to an attachment.
+I attached fraud data dictionary, policy PDF, and KPI notes.
+Create a source-grounded analysis contract and map each assumption to source files.
 ```
 
-### Step 2: Run focused EDA (not endless EDA)
-Do only EDA that affects modeling and operations decisions. Check class imbalance, temporal distribution, high-cardinality identifiers, and suspicious near-target features. Build quick visuals: fraud rate by channel, amount bins, and time-of-day. Use SQL-style thinking even in pandas: always know the grain and denominator.
-
-### Using Claude for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If the AI invents fields or assumes a label that does not exist, use this follow-up prompt:
 ```text
-Create an EDA checklist for fraud modeling with priority labels (must-do, useful, optional).
-Include leakage checks and data quality checks.
+Stop. Only use columns explicitly present in this schema list: [paste list].
+Rebuild the contract and mark unknown items as "requires clarification".
 ```
 
-### Using ChatGPT for this step
+### Step 2: Run focused EDA with validation intent
+Use EDA to answer model-risk questions, not to generate random plots. Check class imbalance, duplicate keys, missingness, suspicious leakage features, and time-based label distribution. Add one “data trust” table with pass/fail checks.
+
+#### Using Claude for this step
 ```text
-Run EDA in ADA:
-- missingness heatmap
-- class distribution
-- fraud rate by top dimensions
-- feature correlation scan
-Return plots + interpretation + next-step recommendations.
+<context>
+I need focused EDA for fraud modeling, not generic profiling.
+</context>
+<task>
+Provide prioritized checks: must-run, useful, optional.
+Include SQL/pandas test for each check.
+</task>
 ```
 
-### Using Gemini for this step
+#### Using ChatGPT for this step
 ```text
-Use attached docs and dataset summary to propose which EDA dimensions are most actionable for operations.
-Prioritize by impact and implementation difficulty.
+Use o1/o3 to reason through edge cases before execution.
+Then in ADA run EDA code for:
+- class balance
+- missingness by segment
+- duplicate transaction checks
+- temporal fraud-rate trend
+Return notebook-ready cells and chart interpretations.
 ```
 
-### Step 3: Train baseline models and compare performance
-Split train/test using time-aware logic if your data is temporal. Train logistic regression first for interpretability, then random forest and gradient boosting for nonlinear patterns. Track at least ROC-AUC, PR-AUC, recall at fixed precision, and confusion matrix at multiple thresholds. Keep a small results table in your notebook so you can copy it directly into your README.
-
-### Using Claude for this step
+#### Using Gemini for this step
 ```text
-Propose a baseline model experiment plan for fraud:
-logistic regression, random forest, gradient boosting.
-Include metrics and threshold strategy based on business cost.
+Use attached data dictionary and fraud operations SOP.
+Recommend which EDA checks are most operationally actionable and why.
 ```
 
-### Using ChatGPT for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If SQL or code uses wrong grain (for example, counts rows when KPI needs unique transaction IDs):
 ```text
-Generate and run sklearn code in ADA for three baseline models.
-Report ROC-AUC, PR-AUC, confusion matrix, and top features.
-Return notebook-ready code blocks.
+Your current logic appears row-grain, but KPI is transaction-grain.
+Rewrite checks using COUNT(DISTINCT transaction_id) where appropriate.
+Add one validation query proving grain correctness.
 ```
 
-### Using Gemini for this step
+### Step 3: Train three baseline models quickly
+Train logistic regression, random forest, and gradient boosting. Use a temporal split if data is time-sensitive; random split may inflate performance. Compare ROC-AUC and PR-AUC, plus practical metrics like recall at fixed precision and expected alerts/day.
+
+#### Using Claude for this step
 ```text
-Given attached model requirements and risk notes, suggest the best baseline model comparison format for stakeholder review.
+<context>
+I need a baseline model plan for fraud with business-aware evaluation.
+</context>
+<task>
+Design experiment order, evaluation metrics, and threshold decision logic.
+</task>
 ```
 
-### Step 4: Threshold tuning and decision design
-A strong fraud notebook is not only “best AUC.” You need an operating threshold. Define expected false positive cost, false negative cost, and review-team capacity. Build a threshold table that shows tradeoffs across 5-10 cutoffs. Then choose one primary threshold and one fallback threshold (for high-risk periods). This gives you practical decision logic for interviews.
-
-### Using Claude for this step
+#### Using ChatGPT for this step
 ```text
-Help me choose a threshold using this FN/FP cost estimate and review capacity.
-Return a decision table and recommended operating policy.
+Use o1/o3 to reason through edge cases before execution.
+Then in ADA generate sklearn code for logistic regression, random forest, and gradient boosting.
+Return metrics table (ROC-AUC, PR-AUC, recall@precision) and top feature signals.
 ```
 
-### Using ChatGPT for this step
+#### Using Gemini for this step
 ```text
-In ADA, compute threshold sweep table and cost curve.
-Recommend threshold options for conservative vs aggressive fraud blocking.
+Use attached policy and model-governance notes.
+Provide a source-grounded recommendation for which baseline to present as primary and why.
 ```
 
-### Using Gemini for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If model code fails or imports break:
 ```text
-Use attached operational constraints doc to propose threshold policy with escalation rules.
+The code failed with this error: [paste error].
+Provide a corrected minimal version that runs with pandas + scikit-learn only.
+Do not introduce extra libraries.
 ```
 
-### Step 5: Package notebook outputs for portfolio use
-Finish by exporting three artifacts: a short findings summary, one metrics table, and one “what I’d do next” section. Recruiters and interviewers care that you can scope, execute, and communicate. Include limitations clearly (label delay, sampling bias, unknown external signals). Push notebook and README to GitHub with a clean project structure.
-
-### Using Claude for this step
+If performance is suspiciously high (possible leakage):
 ```text
-Turn my notebook results into:
-1) executive summary
-2) README highlights
-3) interview talking points.
-Keep it credible and concise.
+Performance seems unrealistic. Run a leakage audit on features and retrain after removing risky columns.
+Show before/after metrics and explain differences.
 ```
 
-### Using ChatGPT for this step
+### Step 4: Choose threshold using business constraints
+A baseline model without threshold policy is incomplete. Define false-positive and false-negative costs, review-team capacity, and acceptable customer friction. Build a threshold sweep table and pick balanced and conservative options.
+
+#### Using Claude for this step
 ```text
-Generate a README section from these model results and charts.
-Include setup steps, key findings, and limitations.
+<context>
+I need an operating threshold policy for fraud alerts.
+</context>
+<task>
+Build threshold decision options using FP/FN costs and reviewer capacity.
+Include policy recommendation and monitoring plan.
+</task>
 ```
 
-### Using Gemini for this step
+#### Using ChatGPT for this step
 ```text
-Use attached notebook outputs + docs to draft a portfolio-ready project narrative with source-grounded claims.
+Use o1/o3 to reason through edge cases before execution.
+Then in ADA compute threshold sweep and expected alert-volume table.
+Provide conservative, balanced, and aggressive options.
+```
+
+#### Using Gemini for this step
+```text
+Using attached operations constraints and escalation rules,
+propose threshold policy with source-grounded justification.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If the AI proposes thresholds without clear assumptions:
+```text
+Do not recommend thresholds until you show explicit assumptions for FN cost, FP cost, and review capacity.
+Recompute with transparent formulas.
+```
+
+### Step 5: Package results for GitHub and interviews
+Create final notebook sections: “What I found,” “What I trust,” “What could be wrong,” and “Next iteration.” Then generate a README snippet summarizing problem, method, metrics, limitations, and next steps.
+
+#### Using Claude for this step
+```text
+<context>
+I need portfolio-ready deliverables from this notebook.
+</context>
+<task>
+Generate: executive summary, README section, and interview talking points.
+Keep wording credible and concise.
+</task>
+```
+
+#### Using ChatGPT for this step
+```text
+Use o1/o3 to reason through edge cases before execution.
+Then produce README-ready markdown with setup, results table, and limitations.
+```
+
+#### Using Gemini for this step
+```text
+Use attached notebook outputs + documentation.
+Create source-grounded portfolio narrative and confidence labels for each claim.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If generated write-up overstates impact:
+```text
+Rewrite in strict evidence mode.
+Only include claims directly supported by this metrics table: [paste table].
+Mark unsupported statements as "not validated".
 ```
 
 ## Using Claude
-Use Claude as your planning and QA layer. Ask it to identify blind spots before you trust metrics. It is especially useful for assumption mapping, leakage warnings, and turning technical output into clear narrative.
+Use Claude as planning and QA layer for analysis contracts, leakage warnings, and concise interview-ready explanations.
 
 ## Using ChatGPT
-Use ChatGPT ADA as your execution engine for quick Python iteration. Upload the CSV, run code, validate outputs, then ask for clean notebook cells and summary markdown.
+Use ChatGPT with ADA for execution: code, plots, and rapid iteration. Keep the two-phase pattern: o1/o3 reasoning first, ADA execution second.
 
 ## Using Gemini
-Use Gemini when your analysis must integrate many attachments (policy docs, prior reports, KPI definitions). Ask it to trace each conclusion to the source material.
+Use Gemini for multi-document grounding when policy docs and KPI definitions matter.
 
 ## Next Steps
-1. Add model monitoring plan (drift + threshold review cadence).
-2. Create a 1-page dashboard mock for operational use.
-3. Publish a repo with notebook, README, and results table screenshot.
+1. Add drift monitoring section (feature drift + threshold review cadence).
+2. Build one dashboard page from notebook outputs.
+3. Publish notebook + README + screenshot in a dedicated repo.
 
 ---
 
 ## Design an n8n Workflow with Claude for a Personal Analytics Command Center
 
 ## Overview
-This tutorial shows how to build a practical “command center” workflow that collects daily analytics signals, summarizes them, and sends one concise action brief. The target is “wow-factor but practical”: automating repetitive analysis without pretending full autonomy. You will define a KPI contract, design node flow, implement in n8n, and add reliability features like retries, approvals, and error logging. Claude is used for architecture and guardrails, ChatGPT for script snippets and testing helpers, and Gemini for long-context planning when you combine docs, SOPs, and multiple data-source notes.
+This tutorial helps you build a personal analytics command center that runs daily and sends one useful summary with recommended actions. The goal is practical automation, not over-engineered orchestration. You will define a KPI contract, design n8n nodes, implement data transforms, add AI summarization, and harden the flow with retries and monitoring.
+
+A strong command center should reduce repetitive analysis, not replace decision-making. Your first version should be intentionally small: 3-5 KPIs, one delivery channel, and clear error handling. This is exactly the type of project recruiters remember because it shows applied analytics, automation maturity, and operational thinking.
 
 ## Prerequisites
 1. Install Node.js 20.19+ (or use n8n Cloud trial).
-2. Install and run n8n locally.
-3. Prepare at least one data source (CSV/API/Google Sheet).
-4. Choose one delivery channel (Slack, email, Notion).
+2. Install n8n locally.
+3. Prepare at least one source (CSV/API/Google Sheet).
+4. Choose one output channel (Slack/email/Notion).
 
 ```bash
 mkdir analytics-command-center
@@ -178,156 +250,190 @@ npm init -y
 npx n8n
 ```
 
-If you prefer global install:
+Optional global install:
 
 ```bash
-npm install n8n -g
+npm install -g n8n
 n8n
 ```
 
-Open n8n in your browser and create a new workflow.
-
 ## Step-by-Step
 
-### Step 1: Define the command center contract
-Before adding nodes, define exactly what “daily success” means. Example output: “A 9:00 AM summary with yesterday’s KPI changes, top anomaly, and one recommended action.” Keep only 3-5 KPIs in v1. Over-scoping is the fastest way to abandon an automation.
+### Step 1: Define command center scope and KPI contract
+Before touching nodes, write a small contract: which KPIs, what schedule, who consumes output, what action should follow. A good daily brief could be: “Top KPI deltas, one anomaly, one recommended action, confidence level.” Keep strict boundaries to avoid noisy reports.
 
-### Using Claude for this step
+#### Using Claude for this step
 ```text
-Design a KPI contract for a personal analytics command center.
-I need daily output with top metric changes and one action recommendation.
-Return KPI definitions, required data fields, and failure cases.
+<role>n8n workflow architect for analytics command center</role>
+<task>Create KPI contract with metrics, thresholds, cadence, and output template.</task>
+<rules>Limit v1 to 3-5 KPIs; include fail-safe when data is stale.</rules>
 ```
 
-### Using ChatGPT for this step
+#### Using ChatGPT for this step
 ```text
-Create a practical KPI contract table for an n8n workflow:
-metric, formula, source, refresh rule, alert threshold, owner.
+Use o1/o3 to reason through edge cases before execution.
+Then create KPI contract table with: metric, source, formula, threshold, owner, action.
 ```
 
-### Using Gemini for this step
+#### Using Gemini for this step
 ```text
-Use attached strategy docs and existing KPI notes to propose a focused v1 contract (max 5 KPIs).
+Using attached KPI docs and planning notes, produce a source-grounded v1 contract and prioritize by business impact.
 ```
 
-### Step 2: Design the node-level workflow
-Create a simple first architecture:
-1) Trigger node (Cron daily 8:50 AM)  
-2) Source nodes (HTTP request, Google Sheets, or file read)  
-3) Transform node (clean + normalize schema)  
-4) KPI calculation node  
-5) AI summary node  
-6) Approval gate (optional)  
-7) Delivery node (Slack/email)  
-8) Error handler branch
-
-Document expected input/output shape for each node. This reduces debugging time later.
-
-### Using Claude for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If KPI formulas are invented or inconsistent with your docs:
 ```text
-Create a node-by-node n8n workflow plan from this KPI contract.
-Include retries, fallback path, and alerting on failure.
+Rebuild KPI contract using only these definitions: [paste exact definitions].
+Flag anything missing instead of guessing.
 ```
 
-### Using ChatGPT for this step
+### Step 2: Design node-by-node workflow architecture
+Create the sequence: trigger -> source ingestion -> normalization -> KPI calculation -> anomaly check -> summary generation -> approval gate (optional) -> delivery -> logging. For each node, define input and output structure. This is the difference between easy debugging and chaos.
+
+#### Using Claude for this step
 ```text
-Give me implementation checklist + pseudo payloads for each n8n node in a daily KPI workflow.
+<context>
+Design n8n node architecture for daily analytics briefing.
+</context>
+<task>
+Provide node sequence, data contracts, retry strategy, and fallback path.
+</task>
 ```
 
-### Using Gemini for this step
+#### Using ChatGPT for this step
 ```text
-Use attached process docs and suggest a robust node sequence with explicit data contracts per step.
+Use o1/o3 to reason through edge cases before execution.
+Then produce implementation checklist with sample payload JSON per node.
 ```
 
-### Step 3: Implement in n8n with minimal custom code
-Build the workflow in small increments. First verify trigger and data ingestion. Then verify transformation output. Only after data is stable should you add AI summarization. For transformations, keep formulas simple and deterministic. If needed, use a Function node for small JavaScript transforms, but avoid large logic in-node if it can live in SQL upstream.
-
-### Using Claude for this step
+#### Using Gemini for this step
 ```text
-Review this draft n8n flow and identify weak points in data handling, retries, and idempotency.
+Use attached SOP and payload examples.
+Create source-grounded node map with dependency checks and owner responsibilities.
 ```
 
-### Using ChatGPT for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If workflow skips critical validation nodes:
 ```text
-Write short JavaScript snippets for n8n Function nodes:
-- normalize date format
-- compute % change vs prior day
-- flag anomalies above threshold
+Your design is missing validation after ingestion.
+Insert explicit schema and freshness checks before KPI calculations.
+Return updated flow diagram.
 ```
 
-### Using Gemini for this step
+### Step 3: Implement transformations and KPI logic
+Build incrementally. First test trigger + ingestion. Then test normalization. Then KPI calculation. Avoid complex custom code in n8n Function nodes unless necessary. Keep formulas deterministic and easy to inspect.
+
+#### Using Claude for this step
 ```text
-Given attached sample payloads and docs, suggest schema normalization rules and edge-case handling.
+Review my draft node logic and identify fragility in data normalization and KPI calculations.
+Suggest safer alternatives.
 ```
 
-### Step 4: Add AI summary + human-in-the-loop controls
-For credibility, keep AI output constrained to your KPI inputs. Prompt the AI summary node with a strict template:
-- KPI deltas
-- likely cause candidates
-- one recommended action
-- confidence level
-Then add a human approval node before sending to external channels if the message includes risk-sensitive recommendations. This keeps automation practical and safe.
-
-### Using Claude for this step
+#### Using ChatGPT for this step
 ```text
-Draft a strict summary prompt for a daily KPI brief.
-Require evidence-linked statements and confidence rating.
+Use o1/o3 to reason through edge cases before execution.
+Then generate minimal JavaScript snippets for n8n Function nodes:
+- date normalization
+- KPI delta vs previous day
+- anomaly flag calculation
 ```
 
-### Using ChatGPT for this step
+#### Using Gemini for this step
 ```text
-Create a compact prompt template for AI summary from structured KPI JSON.
-Include style: short, actionable, no fluff.
+Use attached payload samples to validate field mappings and suggest schema-normalization rules.
 ```
 
-### Using Gemini for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If generated code uses nonexistent fields:
 ```text
-Use attached briefing examples and generate a daily summary template tuned to my reporting style.
+Only use this field list: [paste list].
+Rewrite the transform code and add explicit fallback for missing fields.
 ```
 
-### Step 5: Test, monitor, and ship v1
-Run at least three test scenarios: normal day, missing-source day, and extreme anomaly day. Log failures and store run metadata (timestamp, source status, message sent). Add one weekly review reminder to adjust thresholds and reduce alert fatigue. Save screenshots of workflow and sample output for your portfolio repo.
+### Step 4: Add AI summary and human approval safeguards
+Constrain AI output with a fixed template so summaries stay factual. Recommended template sections: KPI deltas, likely drivers, confidence, and one recommended action. If output affects stakeholders externally, insert a manual approval node before delivery.
 
-### Using Claude for this step
+#### Using Claude for this step
 ```text
-Create a QA plan for this n8n workflow with happy path, failure path, and alert-fatigue checks.
+Create a strict summary prompt that limits output to provided KPI JSON and requires confidence labels.
+Include one manager-review checklist.
 ```
 
-### Using ChatGPT for this step
+#### Using ChatGPT for this step
 ```text
-Generate a test matrix for my workflow and a weekly maintenance checklist.
+Use o1/o3 to reason through edge cases before execution.
+Then draft summary prompt templates and short message format for Slack/email.
 ```
 
-### Using Gemini for this step
+#### Using Gemini for this step
 ```text
-Use attached run logs and suggest reliability improvements ranked by effort and impact.
+Using attached report style examples, build a source-grounded summary format tuned to my communication style.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If AI summary invents reasons unsupported by data:
+```text
+Regenerate summary in evidence-only mode.
+Use only KPI fields provided; if cause is uncertain, state "insufficient evidence".
+```
+
+### Step 5: Test reliability, monitoring, and rollout
+Run three tests: normal run, missing-data run, and anomaly run. Log execution outcomes with timestamps and failure type. Add one weekly review task: adjust thresholds, review false alerts, and refine summary wording.
+
+#### Using Claude for this step
+```text
+Create a QA and reliability checklist for this workflow:
+- happy path
+- partial failure
+- hard failure
+- rollback and escalation
+```
+
+#### Using ChatGPT for this step
+```text
+Use o1/o3 to reason through edge cases before execution.
+Then produce a test matrix and maintenance checklist I can run weekly.
+```
+
+#### Using Gemini for this step
+```text
+Use attached run logs and suggest source-grounded reliability improvements ranked by effort and impact.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If AI suggests impossible reliability features for your current setup:
+```text
+Limit recommendations to tools currently in this stack: [paste stack].
+Re-rank improvements by feasibility this week.
 ```
 
 ## Using Claude
-Claude is strongest here for architecture clarity, failure-mode thinking, and reliable workflow specs you can implement node by node.
+Use Claude to define architecture and failure handling. It performs best when you need clear node responsibilities, safer defaults, and a professional rollout checklist.
 
 ## Using ChatGPT
-Use ChatGPT for quick code snippets, transformation helpers, and test-plan generation that you can immediately apply in n8n.
+Use ChatGPT for practical implementation support and small code snippets. Keep the o1/o3 reasoning-first pattern before generating execution logic.
 
 ## Using Gemini
-Use Gemini to synthesize many docs (SOPs, payload examples, reporting templates) and keep the automation consistent with your broader Google-based workflow context.
+Use Gemini when your workflow must align to many docs, SOPs, or Google-based references. Ask it to map recommendations to sources.
 
 ## Next Steps
-1. Add a weekly trend report branch (not only daily snapshot).
-2. Add anomaly explanations from historical comparisons.
-3. Publish workflow diagram + lessons learned in your portfolio.
+1. Add weekly trend branch in addition to daily snapshot.
+2. Add incident tagging and root-cause labeling over time.
+3. Publish architecture diagram + reliability lessons in portfolio repo.
 
 ---
 
 ## Using AI to Draft a Data Analyst Portfolio and GitHub README in One Evening
 
 ## Overview
-This tutorial gives you a fast, realistic way to turn unfinished analytics projects into publishable portfolio assets in one evening. The objective is not to fake complexity. It is to present your real work clearly: problem, method, result, and what you learned. You will gather project evidence, generate structured repo READMEs, create website-ready summaries, and tailor outputs for job applications. Claude helps with narrative structure and coherence, ChatGPT helps with formatting and reusable templates, and Gemini helps when you want to ground writing in multiple artifacts like notebooks, reports, and job descriptions.
+This tutorial is a practical publishing sprint: convert existing analytics work into high-quality portfolio assets in one evening. You are not inventing achievements. You are packaging real work so recruiters and hiring managers can quickly understand value. The deliverables are clear: improved README(s), website-ready project cards, role-specific resume bullets, and interview talking points.
+
+The strategy is evidence-first. Many weak portfolios fail because they rely on vague language (“analyzed data,” “built dashboard”) without proof. In this sprint, every claim ties to a visible artifact: metric table, chart screenshot, SQL snippet, workflow diagram, or documented limitation. Claude helps structure narrative, ChatGPT helps generate clean Markdown variants, and Gemini helps ground writing across multiple files.
 
 ## Prerequisites
 1. Install Git and VS Code.
-2. Prepare one or two completed analytics projects (notebooks, dashboards, SQL scripts).
-3. Create a folder for portfolio drafting.
+2. Gather one or two analytics projects with notebooks/queries/dashboards.
+3. Collect supporting artifacts: screenshots, metrics table, and short method notes.
 
 ```bash
 mkdir portfolio-evening-sprint
@@ -336,147 +442,189 @@ git init
 code .
 ```
 
-If your projects are in separate repos, clone them first:
+If your projects are in separate repos:
 
 ```bash
-git clone <your-repo-url-1>
-git clone <your-repo-url-2>
+git clone <repo-1>
+git clone <repo-2>
 ```
 
 ## Step-by-Step
 
-### Step 1: Build a project evidence pack
-For each project, collect:
-- one problem statement
-- one data source summary
-- one method summary
-- one result table (before/after, KPI movement, or model metric)
-- one screenshot (dashboard or chart)
-This evidence pack prevents generic writing and makes AI outputs credible.
+### Step 1: Build an evidence pack per project
+Create a simple evidence table for each project:
+- problem statement
+- business context
+- data source + scale
+- method used
+- key result (metric or outcome)
+- limitations
+- next iteration
+This table becomes the source of truth for every AI-generated asset.
 
-### Using Claude for this step
+#### Using Claude for this step
 ```text
-I’m building portfolio docs. Here are raw notes and results.
-Create an evidence pack template and identify missing proof points I should add.
+<context>
+I want evidence-based portfolio documents.
+</context>
+<task>
+Create an evidence-pack template and identify missing proof points from my project notes.
+</task>
 ```
 
-### Using ChatGPT for this step
+#### Using ChatGPT for this step
 ```text
-Turn these project notes into a structured evidence table:
-problem, data, method, result, business impact, limitation.
+Use o1/o3 to reason through edge cases before execution.
+Then convert my raw notes into an evidence table with confidence level per claim.
 ```
 
-### Using Gemini for this step
+#### Using Gemini for this step
 ```text
-Use attached notebook, PDF summary, and chart images to extract a source-grounded evidence pack.
+Using attached notebook, dashboard screenshots, and report docs,
+extract a source-grounded evidence pack with explicit references.
 ```
 
-### Step 2: Draft README v1 for each project
-Create a README skeleton with consistent headings:
-1) Project overview  
-2) Business problem  
-3) Data and methodology  
-4) Key results  
-5) How to run  
-6) Limitations  
-7) Next improvements  
-Consistency across repos makes your GitHub look intentional.
-
-### Using Claude for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If AI adds claims with no proof:
 ```text
-Write a recruiter-friendly README draft from this evidence pack.
-Keep it concise, technically accurate, and easy to skim in 60 seconds.
+Strict evidence mode: only include claims supported by attached artifacts.
+For unsupported statements, write "evidence missing".
 ```
 
-### Using ChatGPT for this step
+### Step 2: Draft README v1 with consistent structure
+Use a repeatable README structure across projects:
+1) What problem this solves  
+2) Data + method  
+3) Results and limitations  
+4) How to run  
+5) What to improve next
+Consistency makes your GitHub feel intentional and professional.
+
+#### Using Claude for this step
 ```text
-Generate README v1 with clear Markdown sections, setup steps, and optional badges.
-Keep language practical and portfolio-oriented.
+Rewrite this project into a recruiter-friendly README with a 60-second skim section and a technical deep-dive.
+Keep all claims evidence-based.
 ```
 
-### Using Gemini for this step
+#### Using ChatGPT for this step
 ```text
-Use attached repo files and notes to draft a README that references actual project artifacts.
+Use o1/o3 to reason through edge cases before execution.
+Then draft README markdown with setup commands, results table, and limitations.
 ```
 
-### Step 3: Create portfolio page summaries and role-specific variants
-From each README, derive:
-- short website card (4-6 lines)
-- medium summary (1 paragraph)
-- interview story bullets (STAR style)
-Then tailor one variant for each role type: Data Analyst, BI Analyst, Analytics Engineer. Use role keywords naturally; do not keyword-stuff.
-
-### Using Claude for this step
+#### Using Gemini for this step
 ```text
-From this README, produce:
-1) website project card
-2) STAR interview bullets
-3) role-specific summary for BI Analyst positions.
+Use attached repo files and evidence pack.
+Draft a source-grounded README where each claim maps to an artifact.
 ```
 
-### Using ChatGPT for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If setup instructions are incorrect or generic:
 ```text
-Create three role variants (Data Analyst, BI Analyst, Analytics Engineer) from this project summary.
+Regenerate setup using only files in this repo tree: [paste tree].
+If a command is uncertain, mark it clearly as "verify before publish".
 ```
 
-### Using Gemini for this step
+### Step 3: Create role-specific portfolio summaries
+From each README, create three role-targeted summaries: Data Analyst, BI Analyst, Analytics Engineer. Do not rewrite project facts; change emphasis based on role. For BI focus on metric clarity/dashboard impact; for analytics engineering focus on pipeline and reliability.
+
+#### Using Claude for this step
 ```text
-Use attached target job descriptions + project docs to generate role-specific portfolio summaries with clear fit mapping.
+Create three role-specific summaries from this README without changing core project facts.
+Highlight different strengths per role.
 ```
 
-### Step 4: Add credibility signals and final polish
-Recruiters scan quickly. Add credibility signals:
-- clear project scope
-- reproducible steps
-- honest limitations
-- next-step roadmap
-- clean repo structure
-Also include one “what I would do in production” section to show engineering maturity even for student projects.
-
-### Using Claude for this step
+#### Using ChatGPT for this step
 ```text
-Review this README as a hiring manager. Score clarity, rigor, and credibility. List top 5 fixes.
+Use o1/o3 to reason through edge cases before execution.
+Generate role-specific variants and a keyword alignment table for ATS readability.
 ```
 
-### Using ChatGPT for this step
+#### Using Gemini for this step
 ```text
-Polish this README for readability and consistency.
-Keep technical precision while reducing unnecessary text.
+Use attached job descriptions and project artifacts.
+Create source-grounded role-fit summaries and identify missing evidence for each role.
 ```
 
-### Using Gemini for this step
+#### Troubleshooting / Handling AI Hallucinations for this step
+If summaries add untrue responsibilities:
 ```text
-Use attached README, notebook, and dashboard screenshot to suggest credibility improvements grounded in evidence.
+Do not add responsibilities not present in my project record.
+Rewrite and include an evidence tag after each claim.
 ```
 
-### Step 5: Publish and connect to applications
-Push final READMEs, then add links to your portfolio website and CV. Build a small application packet for each target role: resume variant, cover letter draft, and project links. Your objective is fast iteration: publish today, improve weekly.
+### Step 4: Build interview stories and resume bullets from evidence
+Use your evidence pack to create STAR-style stories and concise bullets. Each story should include a challenge, your action, result, and one reflection. This helps you answer behavioral and technical interview questions with confidence.
 
-### Using Claude for this step
+#### Using Claude for this step
 ```text
-Create a one-week portfolio upgrade plan from my current repos and target job list.
+Extract 6 STAR stories from this evidence pack and map each to interview competencies.
+Provide 60-second and 2-minute versions.
 ```
 
-### Using ChatGPT for this step
+#### Using ChatGPT for this step
 ```text
-Generate a reusable application checklist with steps for each new job posting.
+Use o1/o3 to reason through edge cases before execution.
+Generate resume bullets (Data Analyst and BI variants) with evidence-linked outcomes.
 ```
 
-### Using Gemini for this step
+#### Using Gemini for this step
 ```text
-Use attached CV + role list + project links to create a prioritized application strategy.
+Use attached CV + project evidence + target role docs.
+Produce source-grounded interview stories and role-specific bullet suggestions.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If bullets sound inflated:
+```text
+Rewrite in conservative mode.
+Use quantified outcomes only when directly supported; otherwise use verified process outcomes.
+```
+
+### Step 5: Final quality check and publish workflow
+Before publishing, run a final review pass:
+- Are claims evidence-based?
+- Are setup steps reproducible?
+- Are limitations explicit?
+- Is project scope clear?
+Then push updates and add links to portfolio website and CV.
+
+#### Using Claude for this step
+```text
+Review this README and portfolio summary as a hiring manager.
+Score clarity, rigor, credibility, and suggest top 5 fixes before publish.
+```
+
+#### Using ChatGPT for this step
+```text
+Use o1/o3 to reason through edge cases before execution.
+Then produce a final pre-publish checklist and concise changelog summary.
+```
+
+#### Using Gemini for this step
+```text
+Use attached final docs and artifacts.
+Perform a source-grounded consistency check and list unresolved weak points.
+```
+
+#### Troubleshooting / Handling AI Hallucinations for this step
+If AI review misses obvious inconsistencies:
+```text
+Re-run review using this rule:
+Check every claim against evidence table row by row.
+Return a mismatch list with file references.
 ```
 
 ## Using Claude
-Use Claude to keep your story coherent across repos. It is excellent for turning technical details into strong narrative structure while preserving accuracy.
+Use Claude to keep narrative consistent across README, portfolio cards, and interview stories. Ask for strict evidence mode when polishing claims.
 
 ## Using ChatGPT
-Use ChatGPT for fast formatting, reusable templates, and concise output variants you can copy into README, LinkedIn, and application forms.
+Use ChatGPT for rapid generation of format variants and reusable templates. Keep the o1/o3 reasoning-first workflow before final drafting.
 
 ## Using Gemini
-Use Gemini when you need source-grounded writing across many files at once, especially if you are cross-referencing project artifacts with job descriptions.
+Use Gemini when your portfolio evidence is spread across many files and formats. Require source mapping so every claim stays defensible.
 
 ## Next Steps
-1. Add one new “automation + analytics” project to show n8n/agent capability.
-2. Add one case-study page with architecture diagram and lessons learned.
-3. Schedule a weekly 60-minute portfolio maintenance sprint.
+1. Add one “automation + analytics” project to differentiate your profile.
+2. Add architecture diagrams and one failure lesson per project.
+3. Schedule a weekly 45-minute portfolio maintenance ritual.
