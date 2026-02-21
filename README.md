@@ -1,118 +1,125 @@
 # Strict-Mode AI Prompt & Automation Playbook for Modern Data Teams
 
-A production-minded AI documentation repository for analytics, BI, and automation workflows in 2026.
+Production-ready AI documentation, prompt systems, and implementation playbooks for analytics, BI, data engineering, and data science teams in 2026.
 
-This repo is designed for data analysts, BI developers, analytics engineers, and advanced students who want to use AI with **rigor**, not guesswork. Everything here is strict mode:
-- explicit assumptions,
-- model-specific prompting standards,
-- validation-first workflows,
-- and practical troubleshooting for hallucinations, bad SQL grain, and failing pipelines.
+This repository is built for people who care about correctness, repeatability, and enterprise constraints. It is intentionally not a “prompt dump.” It is a structured operating system for model-assisted data work.
 
-## Why This Repository Exists
-Most prompt repositories stop at generic text generation. This one is intentionally different.
+## What Makes This Different
+- Model-specific workflows, not generic prompts.
+- Explicit assumptions, edge-case checks, and validation-first outputs.
+- Enterprise-grade topics: lakehouse design, FinOps, causal inference, RAG evaluation, IaC, streaming migration, compliance auditing.
+- Every major asset includes **Troubleshooting / Handling AI Hallucinations** guidance.
 
-You’ll find:
-- **Mega-prompts** for real analytics workflows (not one-liners).
-- **Claude Skills** with XML architecture for high-control planning.
-- **Custom GPT designs** with knowledge-base retrieval guardrails.
-- **Gemini Gem designs** for source-grounded synthesis across Google Workspace artifacts.
-- **Long-form tutorials** with step-by-step build paths and troubleshooting prompts.
+## Staff-Level Expansion Pack
+This repo now includes a Staff-level expansion across architecture, governance, and platform reliability:
+- New Claude Skills for Lakehouse (Iceberg/Delta), Causal Inference, Terraform IaC, RAG Evaluation, Reverse ETL, and Data Mesh.
+- New Custom GPT blueprints for Cloud FinOps, Dynamic Orchestration, PySpark Refactoring, Bayesian Simulation, Time-Series Debugging, and SOC2/HIPAA auditing.
+- New Gemini Gems for executive roadmap synthesis, catalog/lineage sync, API contract analysis, incident trend synthesis, ROI modeling, and metric tie-breaking.
+- New advanced tutorial on migrating from batch dbt to real-time Kafka/Flink materialized views.
+
+## Who This Is For
+- Lead / Staff Data Engineers
+- Lead Analytics Engineers
+- Principal Data Scientists
+- Senior BI and Analytics Platform owners
+- Advanced students targeting senior-ready portfolio work
 
 ## Core Philosophy
-We use each model for what it does best:
+Use each model for its strongest operating mode.
 
-1. **Claude** for XML-based architecture and reasoning structure.
-- Prompt style: `<context>`, `<schema>`, `<task>`, `<rules>`
-- Best for: planning, migration design, governance workflows, and edge-case risk mapping.
+| Model | Best Role in This Repo | Prompting Pattern |
+|---|---|---|
+| Claude | Architecture design, system decomposition, governance planning | XML-first structure: `<role>`, `<instructions>`, `<edge_cases>`, `<output_format>` |
+| ChatGPT (o1/o3 + ADA) | Edge-case reasoning + executable analytics workflows | Two-phase mode: reason with o1/o3, execute with ADA |
+| Gemini | Source-grounded synthesis across large doc sets | Attach docs and require source mapping for every major claim |
 
-2. **ChatGPT (o1/o3 + ADA)** for edge-case reasoning plus executable workflows.
-- Pattern: reason first with `o1/o3`, execute second with `Advanced Data Analysis`.
-- Best for: Python/SQL implementation, notebook iteration, and structured debug loops.
+## Repository Map
 
-3. **Gemini** for source-grounded synthesis with long context.
-- Best for: Drive/Docs/Sheets-heavy projects, multi-document alignment, and requirement consolidation.
+| Folder | What You’ll Find | What You Can Do |
+|---|---|---|
+| `prompts/` | `mega_prompt_library.md` with 40 strict-mode mega-prompts | Run model-specific prompt workflows across SQL, BI, ML, automation, and career assets |
+| `claude_skills/` | 17 Claude Skills (core + staff-level) | Spin up reusable XML-based analysis/architecture modes for real projects |
+| `custom_gpts/` | 15 Custom GPT designs | Build specialized ChatGPT assistants with knowledge-base and guardrail policies |
+| `gemini_gems/` | 15 Gemini Gem designs | Build source-grounded Gems for strategy synthesis, governance, and roadmap planning |
+| `tutorials/` | 5 detailed implementation guides | Ship portfolio and production-style projects with step-by-step and troubleshooting support |
 
-## Repository Structure
-```text
-.
-├── README.md
-├── prompts/
-│   └── mega_prompt_library.md
-├── tutorials/
-│   ├── fraud_detection_analytics_notebook_45_minutes.md
-│   ├── n8n_personal_analytics_command_center.md
-│   ├── ai_portfolio_github_readme_one_evening.md
-│   └── end_to_end_modern_data_stack_setup_weekend.md
-├── claude_skills/
-│   ├── eda_sql_coach.md
-│   ├── n8n_workflow_architect.md
-│   ├── portfolio_readme_editor.md
-│   ├── bi_dashboard_architect.md
-│   ├── job_search_analyst.md
-│   ├── dbt_analytics_engineer_mentor.md
-│   ├── python_data_viz_storytelling_coach.md
-│   ├── ab_test_design_evaluation_specialist.md
-│   ├── data_warehouse_migration_architect.md
-│   ├── semantic_layer_modeler_cube_metricflow.md
-│   └── data_privacy_gdpr_redaction_reviewer.md
-├── custom_gpts/
-│   ├── fraud_analytics_copilot_gpt.md
-│   ├── bi_dashboard_coach_gpt.md
-│   ├── portfolio_job_application_assistant_gpt.md
-│   ├── sql_performance_cost_optimizer_gpt.md
-│   ├── data_quality_governance_copilot_gpt.md
-│   ├── cicd_pipeline_builder_data_teams_gpt.md
-│   ├── mlops_deployment_copilot_gpt.md
-│   ├── ada_spatial_mapper_gpt.md
-│   └── kafka_streaming_analytics_debugger_gpt.md
-└── gemini_gems/
-    ├── analytics_research_gem.md
-    ├── sql_bigquery_review_gem.md
-    ├── automation_planner_gem.md
-    ├── drive_to_dashboard_spec_generator_gem.md
-    ├── meeting_transcript_to_data_ticket_converter_gem.md
-    ├── stakeholder_okr_to_analytics_kpi_translator_gem.md
-    ├── vendor_evaluation_rfp_analyzer_gem.md
-    ├── data_lineage_compliance_mapper_gem.md
-    └── automated_data_catalog_documenter_gem.md
-```
+## Start Here (By Goal)
 
-## Quick Start
-1. Clone the repository.
+### 1) Build Fast, High-Quality Analytics Output
+- Start: `prompts/mega_prompt_library.md`
+- Then pick one skill: `claude_skills/eda_sql_coach.md`
+- Use tutorial: `tutorials/fraud_detection_analytics_notebook_45_minutes.md`
+
+### 2) Build Reliable Automation and Orchestration
+- Start: `claude_skills/n8n_workflow_architect.md`
+- Add GPT support: `custom_gpts/airflow_dagster_dynamic_dag_generator_gpt.md`
+- Apply in tutorial: `tutorials/n8n_personal_analytics_command_center.md`
+
+### 3) Work on Staff-Level Platform Architecture
+- Lakehouse: `claude_skills/data_lakehouse_architect.md`
+- IaC: `claude_skills/terraform_iac_builder_data_platforms.md`
+- FinOps: `custom_gpts/cloud_data_finops_copilot_gpt.md`
+- Real-time migration: `tutorials/migrating_from_batch_to_real_time_flink_kafka_starter_guide.md`
+
+### 4) Build Governance and Compliance Programs
+- Privacy: `claude_skills/data_privacy_gdpr_redaction_reviewer.md`
+- Compliance audit: `custom_gpts/soc2_hipaa_automated_data_auditor_gpt.md`
+- Lineage/compliance synthesis: `gemini_gems/data_lineage_compliance_mapper_gem.md`
+
+### 5) Align Strategy, Metrics, and ROI
+- Strategy to roadmap: `gemini_gems/executive_data_strategy_to_roadmap_converter_gem.md`
+- ROI model: `gemini_gems/analytics_roi_calculator_gem.md`
+- Metric conflicts: `gemini_gems/cross_functional_metric_tiebreaker_gem.md`
+
+## What You Can Build With This Repo
+- Enterprise KPI systems with semantic consistency and governance controls
+- AI-assisted lakehouse and warehouse architecture plans
+- dbt + orchestration + BI implementation blueprints
+- RAG quality gates with judge + deterministic evaluation metrics
+- Reverse ETL activation flows with idempotency and API reliability
+- Compliance evidence pipelines (SOC2/HIPAA-ready controls)
+- Strategy-to-roadmap operating plans for data organizations
+
+## How to Use This Repository (Strict Mode)
+1. Define objective, decision owner, data grain, and constraints.
+2. Choose model and asset type:
+- Claude Skill for architecture/planning
+- Custom GPT for implementation workflows
+- Gemini Gem for multi-document synthesis
+3. Run with mandatory checks:
+- assumptions
+- edge cases
+- validation tests
+- confidence labeling
+4. If output is risky, use the file’s troubleshooting prompts before adoption.
+5. Save prompt + input snapshot + output decision notes for reproducibility.
+
+## Quality Standard Enforced Across Files
+- No blind output acceptance.
+- No hidden assumptions in production paths.
+- No architecture recommendations without rollback and validation plans.
+- No KPI claims without source-grounded definitions.
+- No compliance claims without control mapping and evidence traces.
+
+## Clone and Use
 ```bash
 git clone https://github.com/daniel-st3/ai-analytics-prompt-playbook.git
 cd ai-analytics-prompt-playbook
-```
-
-2. Open in VS Code.
-```bash
 code .
 ```
 
-3. Start with one path based on your goal.
-- Need practical prompts: open `prompts/mega_prompt_library.md`
-- Need structured Claude behavior: open `claude_skills/`
-- Building custom assistants: open `custom_gpts/` or `gemini_gems/`
-- Need guided implementation: open `tutorials/`
-
-## Recommended Usage Pattern (Strict Mode)
-1. Define objective, data grain, and decision owner.
-2. Use model-specific prompt style.
-3. Force assumptions + edge-case checks.
-4. Validate before publishing or automating.
-5. Log prompt, version, and outcome for reproducibility.
-
-## Portfolio and Recruiting Value
-This repository demonstrates:
-- Applied AI workflow design across modern analytics tools.
-- Technical rigor in SQL, ML, orchestration, and governance contexts.
-- Communication maturity: structured prompts, explicit tradeoffs, and troubleshooting discipline.
+## Suggested Weekly Workflow
+1. Pick one active business problem.
+2. Select one Skill + one GPT/Gem support asset.
+3. Execute with strict-mode checks.
+4. Record result and update your runbook.
+5. Add reusable learnings back into repo.
 
 ## Contribution Guidelines
-1. Keep new prompts and docs original and practical.
-2. For new assets, include validation and hallucination controls.
-3. Preserve strict-mode structure and model-specific clarity.
-4. Prefer small, reviewable pull requests with concrete examples.
+1. Keep contributions original, practical, and testable.
+2. Match strict-mode structure and model-specific behavior.
+3. Include troubleshooting/hallucination controls in every major file.
+4. Prefer small PRs with explicit before/after value.
 
 ## License
 `[Choose a license: MIT / Apache-2.0 / Proprietary]`
