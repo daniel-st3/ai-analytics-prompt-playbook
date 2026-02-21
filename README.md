@@ -28,8 +28,8 @@ This project is designed to be read as a portfolio piece.
 ```mermaid
 flowchart LR
     A[User / Data Analyst] -->|Task + context| B[Claude Skill / Strict Prompt]
-    B -->|Validated prompt / workflow spec| C[Repo Assets (Prompts, Templates, Workflows)]
-    C -->|Implemented in tools| D[Production Workflow (n8n / SQL / BI Dashboards)]
+    B -->|Validated prompt and workflow spec| C[Repo Assets - Prompts Templates Workflows]
+    C -->|Implemented in tools| D[Production Workflow - n8n SQL BI Dashboards]
 ```
 
 ## 📦 Expansion Packs Included
