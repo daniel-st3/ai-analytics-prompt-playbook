@@ -25,6 +25,8 @@ This project is designed to be read as a portfolio piece.
 
 ## How the strict-mode flow works
 
+This is how a data team would actually use this repo in practice, from a human asking for help to a productionized workflow.
+
 ```mermaid
 flowchart LR
     A[User / Data Analyst] -->|Task + context| B[Claude Skill / Strict Prompt]
