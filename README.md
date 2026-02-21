@@ -9,11 +9,28 @@
 
 Production-ready AI documentation for analytics, BI, data engineering, and enterprise AI architecture.
 
+## For hiring managers
+
+This project is designed to be read as a portfolio piece.
+
+- **Architecture thinking** – I treat AI models as components in a data stack (alongside SQL, Python, n8n, BI), with clear interfaces and failure modes.  
+- **Production mindset** – Prompts, Claude Skills, and workflows are written in “strict mode” so they can be reused, versioned, and audited instead of living in random chats.  
+- **Multi-model fluency** – I work across Claude, ChatGPT, and Gemini, picking the right model for analysis, coding, or research, and documenting how a data team can use each safely.
+
 ## ✨ What This Repo Gives You
 - Model-specific workflows that match real strengths of Claude, ChatGPT, and Gemini.
 - Enterprise-grade blueprints for architecture, reliability, governance, privacy, and cost control.
 - Practical assets you can apply immediately: Skills, GPT/Gem designs, tutorials, and mega-prompts.
 - Built-in anti-hallucination controls across all major files.
+
+## How the strict-mode flow works
+
+```mermaid
+flowchart LR
+    A[User / Data Analyst] -->|Task + context| B[Claude Skill / Strict Prompt]
+    B -->|Validated prompt / workflow spec| C[Repo Assets<br/>(Prompts, Templates, Workflows)]
+    C -->|Implemented in tools| D[Production Workflow<br/>(n8n / SQL / BI Dashboards)]
+```
 
 ## 📦 Expansion Packs Included
 ### Staff-Level Expansion (Already Included)
